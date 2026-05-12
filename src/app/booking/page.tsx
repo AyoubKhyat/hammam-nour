@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import ZelligePattern from "@/components/ui/ZelligePattern";
 import { treatments, categoryLabels } from "@/data/treatments";
 
 const steps = ["Treatment", "Date & Time", "Details", "Confirmation"];
