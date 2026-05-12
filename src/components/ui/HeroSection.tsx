@@ -13,7 +13,6 @@ interface Ripple {
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const ripplesRef = useRef<Ripple[]>([]);
   const rafRef = useRef(0);
@@ -25,8 +24,6 @@ export default function HeroSection() {
 
     const onScroll = () => {
       const y = window.scrollY;
-      if (bgRef.current)
-        bgRef.current.style.transform = `translateY(${y * 0.35}px)`;
       if (titleRef.current)
         titleRef.current.style.transform = `translateY(${y * 0.15}px) scale(${1 + y * 0.00012})`;
     };
@@ -115,13 +112,8 @@ export default function HeroSection() {
       className="relative h-[100svh] flex items-end overflow-hidden"
     >
       <div
-        ref={bgRef}
         className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
-        style={{
-          backgroundImage: "url('/hero-spa.jpg')",
-          height: "120%",
-          top: "-10%",
-        }}
+        style={{ backgroundImage: "url('/hero-spa.jpg')", height: "120%", top: "-10%" }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/20 to-charcoal/60" />
       <div className="absolute inset-3 sm:inset-4 md:inset-6 border border-ivory/15 rounded-lg pointer-events-none" />

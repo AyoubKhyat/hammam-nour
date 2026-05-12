@@ -39,7 +39,7 @@ export default function Home() {
       <HeroSection />
 
       {/* ══════════ 2. ABOUT ══════════ */}
-      <section className="py-16 sm:py-28 md:py-40 px-5 sm:px-6">
+      <section className="py-16 sm:py-28 md:py-40 px-5 sm:px-6 bg-cream">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <p className="text-center text-charcoal/40 text-xs tracking-[0.35em] uppercase mb-4 sm:mb-6">
@@ -153,7 +153,7 @@ export default function Home() {
       </section>
 
       {/* ══════════ 4. STATS ══════════ */}
-      <section className="py-14 sm:py-20 px-5 sm:px-6">
+      <section className="py-14 sm:py-20 px-5 sm:px-6 bg-cream">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10">
           <CountUp end={3000} suffix="+" label="Guests welcomed" />
           <CountUp end={12} label="Master therapists" />
@@ -162,11 +162,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════ 5. GALLERY ══════════ */}
-      <section className="py-16 sm:py-28 md:py-36 px-5 sm:px-6 bg-sand/30 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
+      {/* ══════════ 5. GALLERY — 3D parallax scroll ══════════ */}
+      <section
+        className="py-16 sm:py-28 md:py-36 px-5 sm:px-6 overflow-hidden relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/hero-spa.jpg')", backgroundAttachment: "fixed" }}
+      >
+        <div className="absolute inset-0 bg-charcoal/50" />
+        <div className="relative z-10 max-w-7xl mx-auto">
           <ScrollReveal>
-            <h2 className="font-playfair text-[14vw] sm:text-[12vw] md:text-[8vw] text-charcoal/[0.07] leading-none text-center select-none mb-2 italic">
+            <h2 className="font-playfair text-[14vw] sm:text-[12vw] md:text-[8vw] text-ivory/[0.15] leading-none text-center select-none mb-2 italic">
               gallery
             </h2>
           </ScrollReveal>

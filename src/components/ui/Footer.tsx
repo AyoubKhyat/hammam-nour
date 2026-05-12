@@ -46,7 +46,12 @@ function ZelligeBorder() {
 
 export default function Footer() {
   return (
-    <footer className="bg-charcoal text-cream">
+    <footer
+      className="text-cream relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/hero-spa.jpg')", backgroundAttachment: "fixed" }}
+    >
+      <div className="absolute inset-0 bg-charcoal/85" />
+      <div className="relative z-10">
       <ZelligeBorder />
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -116,6 +121,7 @@ export default function Footer() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );

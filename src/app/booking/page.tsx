@@ -13,19 +13,20 @@ const timeSlots = {
   evening: ["17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"],
 };
 
+const allSlots = [...timeSlots.morning, ...timeSlots.afternoon, ...timeSlots.evening];
+
 function generateDays() {
   const days = [];
   const today = new Date();
   for (let i = 1; i <= 30; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
-    const booked = Math.random() > 0.7;
     days.push({
       date,
-      available: !booked,
       day: date.getDate(),
       weekday: date.toLocaleDateString("en", { weekday: "short" }),
       month: date.toLocaleDateString("en", { month: "short" }),
+      dateStr: date.toISOString().split("T")[0],
     });
   }
   return days;
@@ -38,6 +39,7 @@ function BookingContent() {
   const [step, setStep] = useState(0);
   const [selectedTreatment, setSelectedTreatment] = useState(preselected || "");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDateStr, setSelectedDateStr] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -46,6 +48,9 @@ function BookingContent() {
     requests: "",
   });
   const [days] = useState(generateDays);
+  const [bookedSlots, setBookedSlots] = useState<{ date: string; time: string }[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [bookingId, setBookingId] = useState("");
 
   useEffect(() => {
     if (preselected && treatments.find((t) => t.id === preselected)) {
@@ -53,7 +58,20 @@ function BookingContent() {
     }
   }, [preselected]);
 
+  useEffect(() => {
+    fetch("/api/availability")
+      .then((r) => r.json())
+      .then((data) => setBookedSlots(data.booked || []))
+      .catch(() => {});
+  }, []);
+
   const treatment = treatments.find((t) => t.id === selectedTreatment);
+
+  const isSlotBooked = (dateStr: string, time: string) =>
+    bookedSlots.some((s) => s.date === dateStr && s.time === time);
+
+  const isDateFullyBooked = (dateStr: string) =>
+    allSlots.every((time) => isSlotBooked(dateStr, time));
 
   const canProceed = () => {
     switch (step) {
@@ -61,6 +79,49 @@ function BookingContent() {
       case 1: return !!selectedDate && !!selectedTime;
       case 2: return !!formData.name && !!formData.email;
       default: return false;
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (!treatment || !selectedDate) return;
+    setSubmitting(true);
+
+    try {
+      const dateFormatted = selectedDate.toLocaleDateString("en", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          treatment: treatment.id,
+          treatmentName: treatment.nameFr,
+          date: selectedDateStr,
+          time: selectedTime,
+          duration: treatment.duration,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          requests: formData.requests,
+          price: treatment.price,
+          dateFormatted,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setBookingId(data.bookingId);
+        setBookedSlots((prev) => [...prev, { date: selectedDateStr, time: selectedTime }]);
+        setStep(3);
+      }
+    } catch {
+      setStep(3);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -181,27 +242,34 @@ function BookingContent() {
               {/* Calendar */}
               <div className="mb-12">
                 <div className="grid grid-cols-7 gap-2">
-                  {days.slice(0, 28).map((d, i) => (
-                    <button
-                      key={i}
-                      disabled={!d.available}
-                      onClick={() => { setSelectedDate(d.date); setSelectedTime(""); }}
-                      className={`p-3 text-center border transition-all duration-300 relative ${
-                        !d.available
-                          ? "bg-sand/10 text-charcoal/20 border-transparent cursor-not-allowed"
-                          : selectedDate?.toDateString() === d.date.toDateString()
-                          ? "border-terracotta bg-terracotta/10 text-charcoal"
-                          : "border-sand/20 hover:border-terracotta/30 text-charcoal bg-ivory"
-                      }`}
-                    >
-                      <div className="text-[10px] uppercase text-charcoal/40">{d.weekday}</div>
-                      <div className="font-playfair text-lg">{d.day}</div>
-                      <div className="text-[10px] text-charcoal/40">{d.month}</div>
-                      {d.available && (
-                        <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-terracotta/60" />
-                      )}
-                    </button>
-                  ))}
+                  {days.slice(0, 28).map((d, i) => {
+                    const fullyBooked = isDateFullyBooked(d.dateStr);
+                    return (
+                      <button
+                        key={i}
+                        disabled={fullyBooked}
+                        onClick={() => {
+                          setSelectedDate(d.date);
+                          setSelectedDateStr(d.dateStr);
+                          setSelectedTime("");
+                        }}
+                        className={`p-3 text-center border transition-all duration-300 relative ${
+                          fullyBooked
+                            ? "bg-sand/10 text-charcoal/20 border-transparent cursor-not-allowed"
+                            : selectedDate?.toDateString() === d.date.toDateString()
+                            ? "border-terracotta bg-terracotta/10 text-charcoal"
+                            : "border-sand/20 hover:border-terracotta/30 text-charcoal bg-ivory"
+                        }`}
+                      >
+                        <div className="text-[10px] uppercase text-charcoal/40">{d.weekday}</div>
+                        <div className="font-playfair text-lg">{d.day}</div>
+                        <div className="text-[10px] text-charcoal/40">{d.month}</div>
+                        {!fullyBooked && (
+                          <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-terracotta/60" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -218,15 +286,15 @@ function BookingContent() {
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {slots.map((time) => {
-                          const unavailable = Math.random() > 0.8;
+                          const booked = isSlotBooked(selectedDateStr, time);
                           return (
                             <button
                               key={time}
-                              disabled={unavailable}
+                              disabled={booked}
                               onClick={() => setSelectedTime(time)}
                               className={`px-4 py-2 text-sm border transition-all duration-300 ${
-                                unavailable
-                                  ? "text-charcoal/20 border-transparent cursor-not-allowed"
+                                booked
+                                  ? "text-charcoal/20 border-transparent cursor-not-allowed line-through"
                                   : selectedTime === time
                                   ? "border-terracotta bg-terracotta text-ivory"
                                   : "border-sand/30 hover:border-terracotta/30 text-charcoal"
@@ -334,7 +402,6 @@ function BookingContent() {
               transition={{ duration: 0.6 }}
               className="text-center py-16"
             >
-              {/* Animated Checkmark */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -374,10 +441,20 @@ function BookingContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="text-charcoal/60 mb-12 max-w-md mx-auto"
+                className="text-charcoal/60 mb-2 max-w-md mx-auto"
               >
-                A confirmation has been sent to {formData.email}. We look forward to welcoming you.
+                A confirmation has been sent to {formData.email}.
               </motion.p>
+              {bookingId && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.1 }}
+                  className="text-terracotta text-sm tracking-[0.15em] mb-12"
+                >
+                  Ref: {bookingId}
+                </motion.p>
+              )}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -434,15 +511,22 @@ function BookingContent() {
               &larr; Back
             </button>
             <button
-              onClick={() => canProceed() && setStep(step + 1)}
+              onClick={() => {
+                if (!canProceed()) return;
+                if (step === 2) {
+                  handleConfirm();
+                } else {
+                  setStep(step + 1);
+                }
+              }}
               className={`px-8 py-3 text-sm tracking-[0.15em] uppercase transition-all duration-300 ${
                 canProceed()
                   ? "bg-terracotta text-ivory hover:bg-clay"
                   : "bg-sand/30 text-charcoal/30 cursor-not-allowed"
-              }`}
-              disabled={!canProceed()}
+              } ${submitting ? "opacity-60 pointer-events-none" : ""}`}
+              disabled={!canProceed() || submitting}
             >
-              {step === 2 ? "Confirm booking" : "Continue"} &rarr;
+              {submitting ? "Booking..." : step === 2 ? "Confirm booking" : "Continue"} &rarr;
             </button>
           </div>
         )}
