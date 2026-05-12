@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hammam Nour
 
-## Getting Started
+Luxury Moroccan hammam & spa website built with Next.js 14, Tailwind CSS, Three.js.
 
-First, run the development server:
+**Live:** https://hammam-nour.vercel.app
+**Repo:** https://github.com/AyoubKhyat/hammam-nour
+
+## Pages
+
+- **Homepage** — Hero with parallax + water ripple, about, venn advantages, gallery (3D scroll), offers, testimonials, CTA with 3D Moroccan lantern
+- **Treatments** — 15 rituals with category filters (Hammam, Massages, Facials, Body Wraps)
+- **Booking** — 4-step flow: treatment > date/time > details > confirmation
+- **About** — Timeline, team, ingredients
+- **Gift Cards** — Amount or package selection with live preview + PDF download
+
+## Tech Stack
+
+- Next.js 14 (App Router), Tailwind CSS, Ragas font
+- Three.js (@react-three/fiber) for 3D Moroccan lantern
+- CSS scroll reveals (IntersectionObserver), magnetic hover, water ripple canvas
+- Resend for booking confirmation emails
+- Google Sheets API for calendar availability
+
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## TODO: Activate Booking System
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The booking currently runs in **demo mode**. To make it real, add these environment variables in **Vercel Dashboard > Settings > Environment Variables** (and in `.env.local` for local dev):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Resend (Email Confirmations)
 
-## Learn More
+1. Sign up at https://resend.com
+2. Get your API key from the dashboard
+3. (Optional) Verify your domain at resend.com/domains for a custom from address
 
-To learn more about Next.js, take a look at the following resources:
+```
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+RESEND_FROM_EMAIL=Hammam Nour <onboarding@resend.dev>
+BOOKING_NOTIFICATION_EMAIL=your-spa-email@example.com
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `RESEND_API_KEY` — from your Resend dashboard
+- `RESEND_FROM_EMAIL` — use `onboarding@resend.dev` for testing, or your verified domain
+- `BOOKING_NOTIFICATION_EMAIL` — the spa email that receives new booking notifications
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Google Sheets (Real Calendar Availability)
 
-## Deploy on Vercel
+1. Go to https://console.cloud.google.com
+2. Create a new project (or use existing)
+3. Enable the **Google Sheets API**
+4. Go to **IAM & Admin > Service Accounts** > Create service account
+5. Download the JSON key file
+6. Create a Google Sheet with this header row in Sheet1 (rename tab to "Bookings"):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+ID | Treatment | Date | Time | Duration | Name | Email | Phone | Requests | Price | Created
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+7. Share the spreadsheet with the service account email (as Editor)
+8. Copy the spreadsheet ID from the URL: `https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit`
+
+```
+GOOGLE_SERVICE_ACCOUNT_EMAIL=name@project.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+GOOGLE_SHEET_ID=your_spreadsheet_id_here
+```
+
+### 3. Redeploy
+
+After adding env vars in Vercel, redeploy for them to take effect:
+
+```bash
+npx vercel --prod
+```
+
+Or trigger a redeploy from the Vercel dashboard.
+
+## How It Works Once Activated
+
+- Client books a treatment > selects date/time > fills details > confirms
+- Booking is saved to Google Sheets (row with all details)
+- Client receives a branded confirmation email via Resend
+- Spa receives a notification email with booking details
+- Already-booked time slots show as unavailable for future visitors
