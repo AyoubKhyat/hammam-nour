@@ -1,7 +1,15 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import CountUp from "@/components/ui/CountUp";
 import GalleryCarousel from "@/components/ui/GalleryCarousel";
+import HeroSection from "@/components/ui/HeroSection";
+import Magnetic from "@/components/ui/Magnetic";
+
+const MoroccanLantern = dynamic(
+  () => import("@/components/three/MoroccanLantern"),
+  { ssr: false }
+);
 
 const offers = [
   {
@@ -27,58 +35,8 @@ const offers = [
 export default function Home() {
   return (
     <main className="bg-cream overflow-x-hidden">
-      {/* ══════════ 1. HERO ══════════ */}
-      <section className="relative h-[100svh] flex items-end overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/hero-spa.jpg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/20 to-charcoal/60" />
-        <div className="absolute inset-3 sm:inset-4 md:inset-6 border border-ivory/15 rounded-lg pointer-events-none" />
-
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none px-4">
-          <h1
-            className="font-playfair text-[15vw] sm:text-[14vw] md:text-[12vw] leading-[0.85] text-ivory text-center tracking-tight drop-shadow-[0_4px_40px_rgba(0,0,0,0.4)]"
-            style={{ animation: "heroTitle 1.5s 0.2s both" }}
-          >
-            HAMMAM
-            <br />
-            NOUR
-          </h1>
-        </div>
-
-        <div className="relative z-10 w-full px-5 sm:px-6 md:px-16 pb-8 sm:pb-12 md:pb-24">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8">
-            <div className="max-w-md animate-[slideUp_1s_0.8s_both]">
-              <p className="text-ivory/80 text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6">
-                A sanctuary of ancient Moroccan wellness
-                in the heart of Marrakesh, where warmth,
-                steam and tradition restore your spirit.
-              </p>
-              <Link
-                href="/booking"
-                className="inline-flex items-center gap-3 bg-ivory text-charcoal px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.15em] uppercase hover:bg-terracotta hover:text-ivory transition-colors duration-500 group"
-              >
-                Sign up online
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform duration-300">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </div>
-
-            <div className="hidden md:flex gap-12 text-right animate-[fadeIn_1s_1.2s_both]">
-              <div>
-                <p className="text-ivory/40 text-xs tracking-[0.2em] uppercase mb-1">Phone</p>
-                <p className="text-ivory/80 text-sm">+212 524 389 100</p>
-              </div>
-              <div>
-                <p className="text-ivory/40 text-xs tracking-[0.2em] uppercase mb-1">Location</p>
-                <p className="text-ivory/80 text-sm">Medina, Marrakesh</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ══════════ 1. HERO — parallax + water ripple ══════════ */}
+      <HeroSection />
 
       {/* ══════════ 2. ABOUT ══════════ */}
       <section className="py-16 sm:py-28 md:py-40 px-5 sm:px-6">
@@ -109,12 +67,14 @@ export default function Home() {
                   with yourself and tradition. Our philosophy is based on respect for ancient
                   Moroccan wisdom and faith in the healing power of warmth, water, and natural ingredients.
                 </p>
-                <Link href="/about" className="inline-flex items-center gap-2 text-charcoal text-sm tracking-[0.1em] group">
-                  Read more
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-1 transition-transform duration-300">
-                    <path d="M5 12h14M12 5l7 7-7 7" />
-                  </svg>
-                </Link>
+                <Magnetic>
+                  <Link href="/about" className="inline-flex items-center gap-2 text-charcoal text-sm tracking-[0.1em] group">
+                    Read more
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:translate-x-1 transition-transform duration-300">
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </Magnetic>
                 <div className="mt-8 sm:mt-12 space-y-3 sm:space-y-4">
                   {["17 years of successful tradition", "12 experienced master therapists", "100% natural Moroccan ingredients"].map((item, i) => (
                     <div key={i} className="flex items-center gap-3">
@@ -145,10 +105,10 @@ export default function Home() {
           <ScrollReveal delay={0.2}>
             <div className="md:hidden grid grid-cols-2 gap-4">
               {[
-                { title: "Ancient tradition", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" },
-                { title: "Natural ingredients", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" },
-                { title: "Sacred atmosphere", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" },
-                { title: "Impeccable service", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" },
+                { title: "Ancient tradition" },
+                { title: "Natural ingredients" },
+                { title: "Sacred atmosphere" },
+                { title: "Impeccable service" },
               ].map((item, i) => (
                 <div key={i} className="bg-cream rounded-2xl p-6 text-center border border-sand/30">
                   <div className="w-12 h-12 rounded-full border border-terracotta/20 mx-auto mb-3 flex items-center justify-center">
@@ -232,24 +192,28 @@ export default function Home() {
           <div className="space-y-6 sm:space-y-8 mt-10 sm:mt-16">
             {offers.map((offer, i) => (
               <ScrollReveal key={i} delay={i * 0.15}>
-                <div className="flex flex-col md:flex-row items-center gap-5 sm:gap-8 bg-cream/60 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 border border-sand/40">
-                  <div className="w-full md:w-[280px] h-[160px] sm:h-[200px] md:h-[180px] rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0 relative">
-                    <img src={offer.image} alt={offer.title} className="absolute inset-0 w-full h-full object-cover" />
+                <Magnetic strength={0.15}>
+                  <div className="flex flex-col md:flex-row items-center gap-5 sm:gap-8 bg-cream/60 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 border border-sand/40 hover:border-terracotta/20 transition-colors duration-500">
+                    <div className="w-full md:w-[280px] h-[160px] sm:h-[200px] md:h-[180px] rounded-xl sm:rounded-2xl overflow-hidden flex-shrink-0 relative">
+                      <img src={offer.image} alt={offer.title} className="absolute inset-0 w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 py-1 sm:py-2 px-1 sm:px-0">
+                      <h3 className="font-playfair text-lg sm:text-xl md:text-2xl text-charcoal mb-2 sm:mb-3">{offer.title}</h3>
+                      <p className="text-charcoal/60 text-sm leading-relaxed">{offer.description}</p>
+                    </div>
                   </div>
-                  <div className="flex-1 py-1 sm:py-2 px-1 sm:px-0">
-                    <h3 className="font-playfair text-lg sm:text-xl md:text-2xl text-charcoal mb-2 sm:mb-3">{offer.title}</h3>
-                    <p className="text-charcoal/60 text-sm leading-relaxed">{offer.description}</p>
-                  </div>
-                </div>
+                </Magnetic>
               </ScrollReveal>
             ))}
           </div>
 
           <ScrollReveal delay={0.4}>
             <div className="text-center mt-10 sm:mt-14">
-              <Link href="/booking" className="inline-flex items-center gap-3 bg-charcoal text-ivory px-8 sm:px-10 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.15em] uppercase hover:bg-terracotta transition-colors duration-500">
-                Sign up online
-              </Link>
+              <Magnetic>
+                <Link href="/booking" className="inline-flex items-center gap-3 bg-charcoal text-ivory px-8 sm:px-10 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.15em] uppercase hover:bg-terracotta transition-colors duration-500">
+                  Sign up online
+                </Link>
+              </Magnetic>
             </div>
           </ScrollReveal>
         </div>
@@ -272,43 +236,54 @@ export default function Home() {
               { name: "Elena K.", text: "From the moment you step through the arch, time slows down. Pure magic in the heart of Marrakesh." },
             ].map((t, i) => (
               <ScrollReveal key={i} delay={i * 0.15}>
-                <div className="bg-cream p-6 sm:p-10 rounded-2xl">
-                  <div className="flex gap-1 mb-4 sm:mb-6">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill="#c4532a">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    ))}
+                <Magnetic strength={0.12}>
+                  <div className="bg-cream p-6 sm:p-10 rounded-2xl hover:shadow-lg transition-shadow duration-500">
+                    <div className="flex gap-1 mb-4 sm:mb-6">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <svg key={j} width="16" height="16" viewBox="0 0 24 24" fill="#c4532a">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-charcoal/70 leading-relaxed mb-6 sm:mb-8 italic font-playfair text-base sm:text-lg">&ldquo;{t.text}&rdquo;</p>
+                    <p className="text-terracotta text-sm tracking-[0.2em] uppercase">{t.name}</p>
                   </div>
-                  <p className="text-charcoal/70 leading-relaxed mb-6 sm:mb-8 italic font-playfair text-base sm:text-lg">&ldquo;{t.text}&rdquo;</p>
-                  <p className="text-terracotta text-sm tracking-[0.2em] uppercase">{t.name}</p>
-                </div>
+                </Magnetic>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════ 8. CTA ══════════ */}
+      {/* ══════════ 8. CTA + 3D Lantern ══════════ */}
       <section className="py-16 sm:py-28 md:py-36 px-5 sm:px-6 bg-charcoal relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
           <span className="font-playfair text-[25vw] sm:text-[20vw] text-ivory/[0.03] leading-none">NOUR</span>
         </div>
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          <ScrollReveal>
-            <h2 className="font-playfair text-3xl sm:text-4xl md:text-6xl text-ivory mb-6 sm:mb-8">Your ritual awaits</h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-sand/50 text-base sm:text-lg mb-8 sm:mb-12 leading-relaxed">
-              Step through the arch and leave the world behind. Book your hammam
-              experience today and discover the ancient art of Moroccan renewal.
-            </p>
-          </ScrollReveal>
-          <ScrollReveal delay={0.3}>
-            <Link href="/booking" className="inline-flex items-center gap-3 bg-terracotta text-ivory px-8 sm:px-12 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.2em] uppercase hover:bg-clay transition-colors duration-500">
-              Book your experience
-            </Link>
-          </ScrollReveal>
+
+        <div className="max-w-6xl mx-auto relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+          <div className="flex-1 text-center lg:text-left">
+            <ScrollReveal>
+              <h2 className="font-playfair text-3xl sm:text-4xl md:text-6xl text-ivory mb-6 sm:mb-8">Your ritual awaits</h2>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <p className="text-sand/50 text-base sm:text-lg mb-8 sm:mb-12 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                Step through the arch and leave the world behind. Book your hammam
+                experience today and discover the ancient art of Moroccan renewal.
+              </p>
+            </ScrollReveal>
+            <ScrollReveal delay={0.3}>
+              <Magnetic>
+                <Link href="/booking" className="inline-flex items-center gap-3 bg-terracotta text-ivory px-8 sm:px-12 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.2em] uppercase hover:bg-clay transition-colors duration-500">
+                  Book your experience
+                </Link>
+              </Magnetic>
+            </ScrollReveal>
+          </div>
+
+          <div className="hidden lg:block w-[350px] flex-shrink-0">
+            <MoroccanLantern />
+          </div>
         </div>
       </section>
     </main>
