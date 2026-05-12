@@ -13,11 +13,20 @@ Luxury Moroccan hammam & spa website built with Next.js 14, Tailwind CSS, Three.
 - **About** — Timeline, team, ingredients
 - **Gift Cards** — Amount or package selection with live preview + PDF download
 
+## Features
+
+- **Multi-language** — English, French, and Arabic with RTL support. Language switcher in navbar, persists via localStorage
+- **SEO** — Open Graph, Twitter cards, per-page metadata, auto-generated sitemap.xml and robots.txt
+- **WhatsApp** — Floating button (bottom-right) linking to wa.me/212524389100 with pre-filled message
+- **3D Effects** — Parallax hero, water ripple cursor, Three.js Moroccan lantern, magnetic hover, gallery parallax scroll
+- **Booking System** — Resend email confirmations + Google Sheets calendar availability (demo mode without env vars)
+
 ## Tech Stack
 
 - Next.js 14 (App Router), Tailwind CSS, Ragas font
 - Three.js (@react-three/fiber) for 3D Moroccan lantern
 - CSS scroll reveals (IntersectionObserver), magnetic hover, water ripple canvas
+- React Context i18n with EN/FR/AR translations
 - Resend for booking confirmation emails
 - Google Sheets API for calendar availability
 
