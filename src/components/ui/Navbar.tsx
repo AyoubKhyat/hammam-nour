@@ -3,18 +3,21 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/treatments", label: "Treatments" },
-  { href: "/about", label: "Our Story" },
-  { href: "/gift-cards", label: "Gift Cards" },
-  { href: "/booking", label: "Book Now" },
-];
+import { useLocale } from "@/lib/i18n";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useLocale();
+
+  const links = [
+    { href: "/", label: t("nav.home") },
+    { href: "/treatments", label: t("nav.treatments") },
+    { href: "/about", label: t("nav.story") },
+    { href: "/gift-cards", label: t("nav.giftCards") },
+    { href: "/booking", label: t("nav.book") },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
@@ -41,6 +44,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          <LanguageSwitcher />
         </div>
 
         <button
@@ -77,6 +81,9 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <div className="mt-4">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       )}

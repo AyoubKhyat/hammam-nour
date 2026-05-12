@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useLocale } from "@/lib/i18n";
 
 function CandleFlame() {
   return (
@@ -45,6 +46,7 @@ function ZelligeBorder() {
 }
 
 export default function Footer() {
+  const { t } = useLocale();
   return (
     <footer
       className="text-cream relative bg-cover bg-center bg-no-repeat"
@@ -60,13 +62,13 @@ export default function Footer() {
               Hammam Nour
             </h2>
             <p className="text-sand/70 text-sm leading-relaxed mb-6">
-              A sanctuary of ancient Moroccan wellness in the heart of Marrakesh.
+              {t("footer.tagline")}
             </p>
             <CandleFlame />
           </div>
 
           <div>
-            <h3 className="font-playfair text-lg mb-6 text-terracotta">Visit</h3>
+            <h3 className="font-playfair text-lg mb-6 text-terracotta">{t("footer.visit")}</h3>
             <div className="space-y-3 text-sm text-sand/70">
               <p>42 Derb El Hammam</p>
               <p>Medina, Marrakesh</p>
@@ -76,23 +78,23 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="font-playfair text-lg mb-6 text-terracotta">Hours</h3>
+            <h3 className="font-playfair text-lg mb-6 text-terracotta">{t("footer.hours")}</h3>
             <div className="space-y-3 text-sm text-sand/70">
-              <p>Monday — Friday</p>
+              <p>{t("footer.monFri")}</p>
               <p>9:00 — 21:00</p>
-              <p className="pt-2">Saturday — Sunday</p>
+              <p className="pt-2">{t("footer.satSun")}</p>
               <p>8:00 — 22:00</p>
             </div>
           </div>
 
           <div>
-            <h3 className="font-playfair text-lg mb-6 text-terracotta">Explore</h3>
+            <h3 className="font-playfair text-lg mb-6 text-terracotta">{t("footer.explore")}</h3>
             <div className="space-y-3">
               {[
-                { href: "/treatments", label: "Treatments" },
-                { href: "/booking", label: "Book a Session" },
-                { href: "/about", label: "Our Story" },
-                { href: "/gift-cards", label: "Gift Cards" },
+                { href: "/treatments", label: t("footer.treatments") },
+                { href: "/booking", label: t("footer.bookSession") },
+                { href: "/about", label: t("footer.ourStory") },
+                { href: "/gift-cards", label: t("footer.giftCards") },
               ].map((link) => (
                 <Link
                   key={link.href}
@@ -108,7 +110,7 @@ export default function Footer() {
 
         <div className="mt-16 pt-8 border-t border-sand/10 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-sand/40 text-xs tracking-wider">
-            &copy; 2008 — {new Date().getFullYear()} Hammam Nour. All rights reserved.
+            &copy; 2008 — {new Date().getFullYear()} Hammam Nour. {t("footer.rights")}
           </p>
           <div className="flex gap-6">
             {["Instagram", "Facebook", "WhatsApp"].map((social) => (

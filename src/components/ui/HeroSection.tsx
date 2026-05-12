@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import Link from "next/link";
+import { useLocale } from "@/lib/i18n";
 
 interface Ripple {
   x: number;
@@ -11,6 +12,7 @@ interface Ripple {
 }
 
 export default function HeroSection() {
+  const { t } = useLocale();
   const sectionRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -140,14 +142,13 @@ export default function HeroSection() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6 md:gap-8">
           <div className="max-w-md animate-[slideUp_1s_0.8s_both]">
             <p className="text-ivory/80 text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6">
-              A sanctuary of ancient Moroccan wellness in the heart of
-              Marrakesh, where warmth, steam and tradition restore your spirit.
+              {t("hero.subtitle")}
             </p>
             <Link
               href="/booking"
               className="inline-flex items-center gap-3 bg-ivory text-charcoal px-6 sm:px-8 py-3 sm:py-4 rounded-full text-xs sm:text-sm tracking-[0.15em] uppercase hover:bg-terracotta hover:text-ivory transition-colors duration-500 group"
             >
-              Sign up online
+              {t("hero.cta")}
               <svg
                 width="16"
                 height="16"
@@ -165,13 +166,13 @@ export default function HeroSection() {
           <div className="hidden md:flex gap-12 text-right animate-[fadeIn_1s_1.2s_both]">
             <div>
               <p className="text-ivory/40 text-xs tracking-[0.2em] uppercase mb-1">
-                Phone
+                {t("hero.phone")}
               </p>
               <p className="text-ivory/80 text-sm">+212 524 389 100</p>
             </div>
             <div>
               <p className="text-ivory/40 text-xs tracking-[0.2em] uppercase mb-1">
-                Location
+                {t("hero.location")}
               </p>
               <p className="text-ivory/80 text-sm">Medina, Marrakesh</p>
             </div>
